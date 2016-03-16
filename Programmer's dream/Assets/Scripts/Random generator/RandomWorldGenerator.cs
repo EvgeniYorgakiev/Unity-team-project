@@ -4,6 +4,7 @@ using UnityEngine;
 public class RandomWorldGenerator : MonoBehaviour
 {
     private const string PlatformTag = "Platform";
+    private const float XDistanceBetweenPlatforms = 0.6f;
     private const float YDistanceBetweenPlatforms = 1.7f;
 
     public List<Platform> platformsPrefabs = new List<Platform>();
@@ -54,8 +55,9 @@ public class RandomWorldGenerator : MonoBehaviour
         }
         else
         {
+            float platformSize = platformsPrefabs[randomIndex].GetComponent<BoxCollider2D>().size.x/2;
             newPosition = new Vector3(
-                position.x + randomXOffset + platformsPrefabs[randomIndex].GetComponent<BoxCollider2D>().size.x/2,
+                position.x + randomXOffset + platformSize + XDistanceBetweenPlatforms,
                 position.y,
                 position.z);
         }

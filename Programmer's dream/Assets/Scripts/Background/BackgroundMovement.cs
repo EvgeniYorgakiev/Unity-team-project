@@ -3,11 +3,13 @@
 public class BackgroundMovement : MonoBehaviour
 {
     private const string LeftMostPositionLayerName = "Left most position";
+    private const string GameControllerTag = "Game controller";
 
     public Transform leftMostPosition;
     public Transform rightMostPosition;
     public bool shouldBeDestroyed = false;
     public float speed = 2;
+    private GameController gameController;
 
     void Start()
     {
@@ -15,10 +17,15 @@ public class BackgroundMovement : MonoBehaviour
         {
             this.leftMostPosition = GameObject.FindGameObjectWithTag(LeftMostPositionLayerName).transform;
         }
+        this.gameController = GameObject.FindGameObjectWithTag(GameControllerTag).GetComponent<GameController>();
     }
 
     public virtual void Update ()
     {
+        if (!this.gameController.gameIsRunning)
+        {
+            return;
+        }
         if (this.transform.position.x < this.leftMostPosition.position.x)
         {
             if (this.shouldBeDestroyed)
@@ -33,12 +40,9 @@ public class BackgroundMovement : MonoBehaviour
                     this.transform.position.z);
             }
         }
-        else
-        {
-            this.transform.position = new Vector3(
+        this.transform.position = new Vector3(
                     this.transform.position.x - Time.deltaTime * this.speed,
                     this.transform.position.y,
                     this.transform.position.z);
-        }
 	}
 }
