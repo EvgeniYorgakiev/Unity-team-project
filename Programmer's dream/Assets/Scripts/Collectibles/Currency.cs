@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class Currency : MonoBehaviour
 {
-    private const string CollectorTag = "Collector";
+    private const string PlayerTag = "Player";
     private const string PossibleProfitTag = "Possible profit";
     private const string PossibleProfitText = "Possible Profit: ";
     private const int CurrencyValue = 100;
@@ -24,7 +24,7 @@ public class Currency : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == CollectorTag)
+        if (other.tag == PlayerTag)
         {
             string valueAsString = Regex.Match(this.possibleProfitText.text, "[0-9]+").Value;
 

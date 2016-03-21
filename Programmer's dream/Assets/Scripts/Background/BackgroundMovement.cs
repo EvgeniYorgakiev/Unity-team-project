@@ -10,6 +10,7 @@ public class BackgroundMovement : MonoBehaviour
     public bool shouldBeDestroyed = false;
     public float speed = 2;
     private GameController gameController;
+    private float distanceBetweenPositions;
 
     void Start()
     {
@@ -17,7 +18,12 @@ public class BackgroundMovement : MonoBehaviour
         {
             this.leftMostPosition = GameObject.FindGameObjectWithTag(LeftMostPositionLayerName).transform;
         }
+
         this.gameController = GameObject.FindGameObjectWithTag(GameControllerTag).GetComponent<GameController>();
+        if (!this.shouldBeDestroyed)
+        {
+            this.distanceBetweenPositions = this.rightMostPosition.position.x - this.leftMostPosition.position.x;
+        }
     }
 
     public virtual void Update ()
@@ -35,14 +41,15 @@ public class BackgroundMovement : MonoBehaviour
             else
             {
                 this.transform.position = new Vector3(
-                    this.rightMostPosition.position.x,
+                    this.transform.position.x + this.distanceBetweenPositions,
                     this.transform.position.y,
                     this.transform.position.z);
             }
         }
+
         this.transform.position = new Vector3(
-                    this.transform.position.x - Time.deltaTime * this.speed,
-                    this.transform.position.y,
-                    this.transform.position.z);
+                        this.transform.position.x - Time.deltaTime * this.speed,
+                        this.transform.position.y,
+                        this.transform.position.z);
 	}
 }
