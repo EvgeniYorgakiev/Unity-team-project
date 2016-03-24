@@ -48,7 +48,7 @@ public class BackgroundMovement : MonoBehaviour
         }
 
         this.transform.position = new Vector3(
-                        this.transform.position.x - Time.deltaTime * this.speed,
+                        this.transform.position.x - Time.deltaTime * this.speed * gameController.globalSpeedModifier,
                         this.transform.position.y,
                         this.transform.position.z);
 	}

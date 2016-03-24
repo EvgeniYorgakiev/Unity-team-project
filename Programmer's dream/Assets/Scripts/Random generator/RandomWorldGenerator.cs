@@ -4,76 +4,60 @@ using UnityEngine;
 public class RandomWorldGenerator : MonoBehaviour
 {
     private const string PlatformTag = "Platform";
-    private const float XDistanceBetweenPlatforms = 0.6f;
-    private const float YDistanceBetweenPlatforms = 1.7f;
+    private const string BugTag = "Bug";
+    private const float SecondsUntilFirstBug = 10f;
 
     public List<Platform> platformsPrefabs = new List<Platform>();
-    private int numberOfPlatformsInCollision = 0;
-	
-	void FixedUpdate ()
+    public List<Enemy> enemiesPrefabs = new List<Enemy>();
+    private int numberOfObjectsInCollision = 0;
+    private float timeSinceStart = 0.0f;
+    private PlatformCreater platformCreater;
+    private BugCreater bugCreater;
+
+    private int NumberOfObjectsInCollision
     {
-        if (numberOfPlatformsInCollision == 0)
-        {
-            CreatePlatform(this.transform.position, true, true);
-        }
+        get { return numberOfObjectsInCollision; }
+        set { numberOfObjectsInCollision = value; }
     }
 
-    private void CreatePlatform(Vector3 position, bool randomizeX, bool startingPlatform)
+    private float TimeSinceStart
     {
-        int randomIndex = Random.Range(0, platformsPrefabs.Count);
-        float randomXOffset = 0;
-        if(randomizeX)
-        {
-            float platformSize = platformsPrefabs[randomIndex].GetComponent<BoxCollider2D>().size.x/2;
-            randomXOffset = Random.Range(
-                -this.GetComponent<BoxCollider2D>().size.x / 2 + platformSize,
-                 this.GetComponent<BoxCollider2D>().size.x / 2);
-        }
-
-        var newPosition = NewPlatformPosition(position, startingPlatform, randomXOffset, randomIndex);
-
-        GameObject platform = (GameObject)Object.Instantiate(
-            platformsPrefabs[randomIndex].gameObject, 
-            newPosition,
-            this.transform.rotation);
-
-        if (startingPlatform)
-        {
-            CreateBonusPlatforms(newPosition, platform.GetComponent<BoxCollider2D>().size.x / 2);
-        }
+        get { return timeSinceStart; }
+        set { timeSinceStart = value; }
     }
 
-    private Vector3 NewPlatformPosition(Vector3 position, bool startingPlatform, float randomXOffset, int randomIndex)
+    private PlatformCreater PlatformCreater
     {
-        Vector3 newPosition;
-        if (startingPlatform)
-        {
-            newPosition = new Vector3(
-                position.x + randomXOffset,
-                position.y + platformsPrefabs[randomIndex].YOffset,
-                position.z);
-        }
-        else
-        {
-            float platformSize = platformsPrefabs[randomIndex].GetComponent<BoxCollider2D>().size.x/2;
-            newPosition = new Vector3(
-                position.x + randomXOffset + platformSize + XDistanceBetweenPlatforms,
-                position.y,
-                position.z);
-        }
-        return newPosition;
+        get { return platformCreater; }
+        set { platformCreater = value; }
     }
 
-    private void CreateBonusPlatforms(Vector3 position, float sizeOfPlatform)
+    private BugCreater BugCreater
     {
-        int randomNumber = Random.Range(0, 2);
-        if (randomNumber == 0)
+        get { return bugCreater; }
+        set { bugCreater = value; }
+    }
+
+    void Start()
+    {
+        this.PlatformCreater = new PlatformCreater(this.gameObject, this.platformsPrefabs);
+        this.BugCreater = new BugCreater(this.gameObject, this.enemiesPrefabs);
+    }
+
+    void Update()
+    {
+        this.TimeSinceStart += Time.deltaTime;
+    }
+
+    void FixedUpdate ()
+    {
+        if (numberOfObjectsInCollision == 0)
         {
-            Vector3 newPosition = new Vector3(
-                position.x + sizeOfPlatform,
-                position.y + YDistanceBetweenPlatforms,
-                position.z);
-            CreatePlatform(newPosition, false, false);
+            this.PlatformCreater.CreatePlatform(this.transform.position, true, true);
+            if (this.TimeSinceStart > SecondsUntilFirstBug)
+            {
+                this.BugCreater.CreateBug(this.transform.position, true);
+            }
         }
     }
 
@@ -81,7 +65,7 @@ public class RandomWorldGenerator : MonoBehaviour
     {
         if (collision.tag == PlatformTag)
         {
-            numberOfPlatformsInCollision++;
+            this.NumberOfObjectsInCollision++;
         }
     }
 
@@ -89,7 +73,7 @@ public class RandomWorldGenerator : MonoBehaviour
     {
         if (collision.tag == PlatformTag)
         {
-            numberOfPlatformsInCollision--;
+            this.NumberOfObjectsInCollision--;
         }
     }
 }

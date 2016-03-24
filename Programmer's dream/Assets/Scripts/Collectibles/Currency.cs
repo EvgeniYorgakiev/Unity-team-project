@@ -26,9 +26,9 @@ public class Currency : MonoBehaviour
     {
         if (other.tag == PlayerTag)
         {
-            string valueAsString = Regex.Match(this.possibleProfitText.text, "[0-9]+").Value;
+            string currentScoreAsString = Regex.Match(this.possibleProfitText.text, "[0-9]+").Value;
 
-            this.possibleProfitText.text = PossibleProfitText + (int.Parse(valueAsString) + CurrencyValue).ToString();
+            this.possibleProfitText.text = PossibleProfitText + (int.Parse(currentScoreAsString) + CurrencyValue).ToString();
             Destroy(this.gameObject);
         }
     }
