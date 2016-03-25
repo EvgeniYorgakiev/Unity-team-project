@@ -24,7 +24,7 @@ public class BugCreater
         this.EnemiesPrefabs = enemiesPrefabs;
     }
 
-    public void CreateBug(Vector3 position, bool randomizeX)
+    public GameObject CreateBug(Vector3 position, bool randomizeX)
     {
         int randomIndex = Random.Range(0, enemiesPrefabs.Count);
         float randomXOffset = 0;
@@ -32,13 +32,13 @@ public class BugCreater
         {
             float bugSize = enemiesPrefabs[randomIndex].GetComponent<BoxCollider2D>().size.x / 2;
             randomXOffset = Random.Range(
-                -this.RandomGenerator.GetComponent<BoxCollider2D>().size.x / 2 + bugSize,
+                -this.RandomGenerator.GetComponent<BoxCollider2D>().size.x / 4 + bugSize,
                  this.RandomGenerator.GetComponent<BoxCollider2D>().size.x / 2);
         }
 
         var newPosition = NewBugPosition(position, randomXOffset, randomIndex);
 
-        Object.Instantiate(
+        return (GameObject)Object.Instantiate(
             enemiesPrefabs[randomIndex].gameObject,
             newPosition,
             this.RandomGenerator.transform.rotation);

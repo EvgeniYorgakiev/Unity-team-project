@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlatformCreater
 {
-    private const float XDistanceBetweenPlatforms = 0.6f;
+    private const float XDistanceBetweenPlatforms = 0.7f;
     private const float YDistanceBetweenPlatforms = 1.7f;
 
     private GameObject randomGenerator;
@@ -27,7 +27,7 @@ public class PlatformCreater
         this.PlatformsPrefabs = platformsPrefabs;
     }
 
-    public void CreatePlatform(Vector3 position, bool randomizeX, bool startingPlatform)
+    public GameObject CreatePlatform(Vector3 position, bool randomizeX, bool startingPlatform)
     {
         int randomIndex = UnityEngine.Random.Range(0, platformsPrefabs.Count);
         float randomXOffset = 0;
@@ -35,7 +35,7 @@ public class PlatformCreater
         {
             float platformSize = platformsPrefabs[randomIndex].GetComponent<BoxCollider2D>().size.x / 2;
             randomXOffset = UnityEngine.Random.Range(
-                -this.RandomGenerator.GetComponent<BoxCollider2D>().size.x / 2 + platformSize,
+                -this.RandomGenerator.GetComponent<BoxCollider2D>().size.x / 4 + platformSize,
                  this.RandomGenerator.GetComponent<BoxCollider2D>().size.x / 2);
         }
 
@@ -50,6 +50,8 @@ public class PlatformCreater
         {
             CreateBonusPlatforms(newPosition, platform.GetComponent<BoxCollider2D>().size.x / 2);
         }
+
+        return platform;
     }
 
     private Vector3 NewPlatformPosition(Vector3 position, bool startingPlatform, float randomXOffset, int randomIndex)

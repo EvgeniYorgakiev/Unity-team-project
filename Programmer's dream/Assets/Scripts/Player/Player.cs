@@ -46,4 +46,12 @@ public class Player : MonoBehaviour
 
         this.PlayerKill.Update(this.gameObject.transform.position.x);
     }
+    
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == Tags.BugTag)
+        {
+            PlayerKill.KillPlayer();
+        }
+    }
 }

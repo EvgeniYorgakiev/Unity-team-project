@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RandomWorldGenerator : MonoBehaviour
 {
-    private const string PlatformTag = "Platform";
-    private const string BugTag = "Bug";
     private const float SecondsUntilFirstBug = 10f;
+    private const float MaxPercentageForACollectible = 100f;
 
     public List<Platform> platformsPrefabs = new List<Platform>();
     public List<Enemy> enemiesPrefabs = new List<Enemy>();
+    public List<Collectible> collectibles = new List<Collectible>();
     private int numberOfObjectsInCollision = 0;
     private float timeSinceStart = 0.0f;
     private PlatformCreater platformCreater;
@@ -53,17 +55,63 @@ public class RandomWorldGenerator : MonoBehaviour
     {
         if (numberOfObjectsInCollision == 0)
         {
-            this.PlatformCreater.CreatePlatform(this.transform.position, true, true);
+            int numberOfPossibleObjects = 1;
             if (this.TimeSinceStart > SecondsUntilFirstBug)
             {
-                this.BugCreater.CreateBug(this.transform.position, true);
+                numberOfPossibleObjects++;
+            }
+
+            int randomObjectIndex = Random.Range(0, numberOfPossibleObjects);
+            var randomObject = CreateRandomObject(randomObjectIndex);
+            
+            SpawnCollectible(randomObject);
+        }
+    }
+
+    private void SpawnCollectible(GameObject randomObject)
+    {
+        for (int i = 0; i < this.collectibles.Count; i++)
+        {
+            float randomNumberForCollectible = Random.Range(0f, MaxPercentageForACollectible);
+            if (randomNumberForCollectible < this.collectibles[i].chanceToSpawn)
+            {
+                var newPosition = new Vector3(
+                    randomObject.transform.position.x,
+                    randomObject.transform.position.y + this.collectibles[i].YOffset,
+                    this.collectibles[i].transform.position.z);
+
+                UnityEngine.Object.Instantiate(
+                    this.collectibles[i].gameObject,
+                    newPosition,
+                    this.transform.rotation);
+
+                return;
+            }
+        }
+    }
+
+    private GameObject CreateRandomObject(int randomObjectIndex)
+    {
+        switch (randomObjectIndex)
+        {
+            case 0:
+            {
+                return this.PlatformCreater.CreatePlatform(this.transform.position, true, true);
+            }
+            case 1:
+            {
+                return this.BugCreater.CreateBug(this.transform.position, true);
+            }
+            default:
+            {
+                throw new ArgumentException("Random number option not found");
             }
         }
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == PlatformTag)
+        if (collision.tag == Tags.PlatformTag || collision.tag == Tags.BugTag)
         {
             this.NumberOfObjectsInCollision++;
         }
@@ -71,7 +119,7 @@ public class RandomWorldGenerator : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == PlatformTag)
+        if (collision.tag == Tags.PlatformTag || collision.tag == Tags.BugTag)
         {
             this.NumberOfObjectsInCollision--;
         }

@@ -3,7 +3,6 @@
 public class BackgroundMovement : MonoBehaviour
 {
     private const string LeftMostPositionLayerName = "Left most position";
-    private const string GameControllerTag = "Game controller";
 
     public Transform leftMostPosition;
     public Transform rightMostPosition;
@@ -19,7 +18,7 @@ public class BackgroundMovement : MonoBehaviour
             this.leftMostPosition = GameObject.FindGameObjectWithTag(LeftMostPositionLayerName).transform;
         }
 
-        this.gameController = GameObject.FindGameObjectWithTag(GameControllerTag).GetComponent<GameController>();
+        this.gameController = GameObject.FindGameObjectWithTag(Tags.GameControllerTag).GetComponent<GameController>();
         if (!this.shouldBeDestroyed)
         {
             this.distanceBetweenPositions = this.rightMostPosition.position.x - this.leftMostPosition.position.x;

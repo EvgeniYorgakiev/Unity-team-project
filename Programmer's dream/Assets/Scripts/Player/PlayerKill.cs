@@ -1,12 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Text.RegularExpressions;
 using UnityEngine.UI;
 
 public class PlayerKill
 {
-    private const string PossibleProfitTag = "Possible profit";
-    private const string HighScoreTag = "High score";
     private const string HighScoreDescription = "High score: ";
 
     private float startingPlayerXPosition;
@@ -42,23 +39,28 @@ public class PlayerKill
     {
         this.GameController = gameController;
         this.StartingPlayerXPosition = startingPlayerXPosition;
-        this.HighScore = GameObject.FindGameObjectWithTag(HighScoreTag).gameObject;
-        this.PossibleProfit = GameObject.FindGameObjectWithTag(PossibleProfitTag).GetComponent<Text>();
+        this.HighScore = GameObject.FindGameObjectWithTag(Tags.HighScoreTag).gameObject;
+        this.PossibleProfit = GameObject.FindGameObjectWithTag(Tags.PossibleProfitTag).GetComponent<Text>();
     }
 
     public void Update(float currentPlayerXPosition)
     {
         if (currentPlayerXPosition < this.StartingPlayerXPosition)
         {
-            this.GameController.gameIsRunning = false;
-            int currentScore = int.Parse(Regex.Match(this.PossibleProfit.text, "[0-9]+").Value);
-            int highScoreValue = int.Parse(Regex.Match(this.HighScore.GetComponent<Text>().text, "[0-9]+").Value);
+            KillPlayer();
+        }
+    }
 
-            if (currentScore > highScoreValue)
-            {
-                this.HighScore.GetComponent<Text>().text = HighScoreDescription + (currentScore).ToString();
-                this.HighScore.GetComponent<HighScore>().Save();
-            }
+    public void KillPlayer()
+    {
+        this.GameController.gameIsRunning = false;
+        int currentScore = int.Parse(Regex.Match(this.PossibleProfit.text, "[0-9]+").Value);
+        int highScoreValue = int.Parse(Regex.Match(this.HighScore.GetComponent<Text>().text, "[0-9]+").Value);
+
+        if (currentScore > highScoreValue)
+        {
+            this.HighScore.GetComponent<Text>().text = HighScoreDescription + (currentScore).ToString();
+            this.HighScore.GetComponent<HighScore>().Save();
         }
     }
 }
