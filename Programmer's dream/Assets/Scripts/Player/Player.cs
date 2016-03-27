@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Player : MonoBehaviour
 {
@@ -6,8 +7,10 @@ public class Player : MonoBehaviour
 
     public float jumpDistance;
     public GameController gameController;
+    public List<GameObject> lives;
     private PlayerMovement playerMovement;
     private PlayerKill playerKill;
+    private List<GameObject> objectsInCollisionRange = new List<GameObject>();
 
     public PlayerMovement PlayerMovement
     {
@@ -32,7 +35,7 @@ public class Player : MonoBehaviour
 
         this.PlayerMovement = new PlayerMovement(this.gameObject, this.gameController, this.jumpDistance);
 
-        this.PlayerKill = new PlayerKill(this.gameController, this.gameObject.transform.position.x);
+        this.PlayerKill = new PlayerKill(this.gameController, this.gameObject.transform.position.x, this.lives, this.gameObject);
     }
 
     void FixedUpdate()
@@ -44,14 +47,27 @@ public class Player : MonoBehaviour
     {
         this.PlayerMovement.Update();
 
-        this.PlayerKill.Update(this.gameObject.transform.position.x);
+        this.PlayerKill.Update(this.gameObject.transform.position.x, this.objectsInCollisionRange);
     }
     
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == Tags.BugTag)
         {
-            PlayerKill.KillPlayer();
+            this.objectsInCollisionRange.Add(other.gameObject);
+            PlayerKill.TakeLife(this.objectsInCollisionRange);
+        }
+        else if (other.tag == Tags.PlatformTag)
+        {
+            this.objectsInCollisionRange.Add(other.gameObject);
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.tag == Tags.BugTag || other.tag == Tags.PlatformTag)
+        {
+            this.objectsInCollisionRange.Remove(other.gameObject);
         }
     }
 }

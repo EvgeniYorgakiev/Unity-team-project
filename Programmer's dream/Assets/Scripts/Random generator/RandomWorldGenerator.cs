@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 public class RandomWorldGenerator : MonoBehaviour
 {
-    private const float SecondsUntilFirstBug = 10f;
+    private const float SecondsUntilFirstBug = 30f;
     private const float MaxPercentageForACollectible = 100f;
 
     public List<Platform> platformsPrefabs = new List<Platform>();

@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 public class Currency : MonoBehaviour
 {
-    private const string PossibleProfitText = "Possible Profit: ";
-    private const int CurrencyValue = 100;
     private const float SpeedFactor = 5;
 
     public Sprite zeroSprite;
@@ -39,8 +37,11 @@ public class Currency : MonoBehaviour
         if (other.tag == Tags.PlayerTag)
         {
             string currentScoreAsString = Regex.Match(this.possibleProfitText.text, "[0-9]+").Value;
+            GameController gameController =
+                GameObject.FindGameObjectWithTag(Tags.GameControllerTag).GetComponent<GameController>();
 
-            this.possibleProfitText.text = PossibleProfitText + (int.Parse(currentScoreAsString) + CurrencyValue).ToString();
+            this.possibleProfitText.text = 
+                Messages.PossibleProfitText + (int.Parse(currentScoreAsString) + gameController.currencyValue).ToString();
             Destroy(this.gameObject);
         }
         else if (other.tag == Tags.MagnetCollectorTag && other.GetComponent<MagnetCollector>().enabled)

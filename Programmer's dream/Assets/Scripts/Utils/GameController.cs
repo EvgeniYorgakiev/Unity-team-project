@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour
     private const float TimeForSpeedIncrease = 6f;
 
     internal bool gameIsRunning = true;
+    internal int currencyValue = 100;
     internal float globalSpeedModifier = 1.0f;
     private float currentSecond = 0.0f;
 
