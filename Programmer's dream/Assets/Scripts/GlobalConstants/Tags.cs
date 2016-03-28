@@ -7,4 +7,5 @@
     public const string HighScoreTag = "High score";
     public const string GameControllerTag = "Game controller";
     public const string MagnetCollectorTag = "Magnet collector";
+    public const string FlamethrowerTag = "Flamethrower";
 }

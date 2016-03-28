@@ -6,7 +6,6 @@ using Random = UnityEngine.Random;
 public class RandomWorldGenerator : MonoBehaviour
 {
     private const float SecondsUntilFirstBug = 30f;
-    private const float MaxPercentageForACollectible = 100f;
 
     public List<Platform> platformsPrefabs = new List<Platform>();
     public List<Enemy> enemiesPrefabs = new List<Enemy>();
@@ -15,6 +14,7 @@ public class RandomWorldGenerator : MonoBehaviour
     private float timeSinceStart = 0.0f;
     private PlatformCreater platformCreater;
     private BugCreater bugCreater;
+    private CollectibleCreater collectibleCreater;
 
     private int NumberOfObjectsInCollision
     {
@@ -40,10 +40,17 @@ public class RandomWorldGenerator : MonoBehaviour
         set { bugCreater = value; }
     }
 
+    private CollectibleCreater CollectibleCreater
+    {
+        get { return collectibleCreater; }
+        set { collectibleCreater = value; }
+    }
+
     void Start()
     {
         this.PlatformCreater = new PlatformCreater(this.gameObject, this.platformsPrefabs);
         this.BugCreater = new BugCreater(this.gameObject, this.enemiesPrefabs);
+        this.CollectibleCreater = new CollectibleCreater(this.gameObject, this.collectibles);
     }
 
     void Update()
@@ -64,29 +71,7 @@ public class RandomWorldGenerator : MonoBehaviour
             int randomObjectIndex = Random.Range(0, numberOfPossibleObjects);
             var randomObject = CreateRandomObject(randomObjectIndex);
             
-            SpawnCollectible(randomObject);
-        }
-    }
-
-    private void SpawnCollectible(GameObject randomObject)
-    {
-        for (int i = 0; i < this.collectibles.Count; i++)
-        {
-            float randomNumberForCollectible = Random.Range(0f, MaxPercentageForACollectible);
-            if (randomNumberForCollectible < this.collectibles[i].chanceToSpawn)
-            {
-                var newPosition = new Vector3(
-                    randomObject.transform.position.x,
-                    randomObject.transform.position.y + this.collectibles[i].YOffset,
-                    this.collectibles[i].transform.position.z);
-
-                UnityEngine.Object.Instantiate(
-                    this.collectibles[i].gameObject,
-                    newPosition,
-                    this.transform.rotation);
-
-                return;
-            }
+            CollectibleCreater.SpawnCollectible(randomObject);
         }
     }
 

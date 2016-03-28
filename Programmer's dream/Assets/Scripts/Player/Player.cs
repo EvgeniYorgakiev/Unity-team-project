@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
 
     public float jumpDistance;
     public GameController gameController;
+    public Flamethrower flamethrower;
     public List<GameObject> lives;
     private PlayerMovement playerMovement;
     private PlayerKill playerKill;

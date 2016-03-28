@@ -1,0 +1,20 @@
+﻿using UnityEngine;
+
+public class Flamethrower : MonoBehaviour
+{
+    public float duration = 0.0f;
+    internal float timeActive = 0.0f;
+
+    void Update()
+    {
+        if (this.duration < this.timeActive)
+        {
+            this.timeActive = 0.0f;
+            this.gameObject.SetActive(false);
+        }
+        else
+        {
+            this.timeActive += Time.deltaTime;
+        }
+    }
+}
