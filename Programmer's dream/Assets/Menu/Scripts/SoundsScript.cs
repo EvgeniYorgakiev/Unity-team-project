@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
-
-using UnityEngine.UI;
 
 public class SoundsScript : MonoBehaviour
 {
-    bool isMute;
+    private bool isMute;
 
     public void Mute()
     {
-        isMute = !isMute;
-        AudioListener.volume = isMute ? 0 : 1;
+        this.isMute = !this.isMute;
+        AudioListener.volume = this.isMute ? 0 : 1;
     }
 }

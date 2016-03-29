@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-
     public Transform mainMenu;
 
     public Transform optionsMenu;
