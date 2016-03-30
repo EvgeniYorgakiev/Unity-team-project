@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     public GameController gameController;
     public Flamethrower flamethrower;
     public List<GameObject> lives;
+    public AudioSource soundEffect;
+    public AudioClip jump;
     private PlayerMovement playerMovement;
     private PlayerKill playerKill;
     private List<GameObject> objectsInCollisionRange = new List<GameObject>();
@@ -34,7 +36,12 @@ public class Player : MonoBehaviour
             this.gameObject.transform.position.y,
             this.gameObject.transform.position.z);
 
-        this.PlayerMovement = new PlayerMovement(this.gameObject, this.gameController, this.jumpDistance);
+        this.PlayerMovement = new PlayerMovement(
+            this.gameObject, 
+            this.gameController,
+            this.jumpDistance, 
+            this.soundEffect, 
+            this.jump);
 
         this.PlayerKill = new PlayerKill(this.gameController, this.gameObject.transform.position.x, this.lives, this.gameObject);
     }
@@ -46,9 +53,12 @@ public class Player : MonoBehaviour
 
     void Update ()
     {
-        this.PlayerMovement.Update();
+        if (gameController.gameIsRunning)
+        {
+            this.PlayerMovement.Update();
 
-        this.PlayerKill.Update(this.gameObject.transform.position.x, this.objectsInCollisionRange);
+            this.PlayerKill.Update(this.gameObject.transform.position.x, this.objectsInCollisionRange);
+        }
     }
     
     void OnTriggerEnter2D(Collider2D other)

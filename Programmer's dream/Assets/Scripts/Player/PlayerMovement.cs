@@ -11,12 +11,16 @@ public class PlayerMovement
     private bool fallingFast = false;
     private bool jumping = false;
     private float lastVelocity = 0;
+    private AudioSource soundEffects;
+    private AudioClip jump;
 
-    public PlayerMovement(GameObject gameObject, GameController gameController, float jumpDistance)
+    public PlayerMovement(GameObject gameObject, GameController gameController, float jumpDistance, AudioSource soundEffects, AudioClip jump)
     {
         this.GameObject = gameObject;
         this.GameController = gameController;
         this.JumpDistance = jumpDistance;
+        this.SoundEffects = soundEffects;
+        this.Jump = jump;
     }
 
     private float JumpDistance
@@ -35,6 +39,18 @@ public class PlayerMovement
     {
         get { return gameController; }
         set { gameController = value; }
+    }
+
+    private AudioSource SoundEffects
+    {
+        get { return soundEffects; }
+        set { soundEffects = value; }
+    }
+
+    private AudioClip Jump
+    {
+        get { return jump; }
+        set { jump = value; }
     }
 
     private bool FallingFast
@@ -73,11 +89,15 @@ public class PlayerMovement
     {
         bool isTouchingGround = Math.Abs(this.LastVelocity) < VelocityTolerance;
         bool isInTheAir = Math.Abs(this.LastVelocity) > VelocityTolerance;
-        if (Input.GetKeyDown(KeyCode.UpArrow) && isTouchingGround && this.GameController.gameIsRunning)
+        if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+            && isTouchingGround && this.GameController.gameIsRunning)
         {
+            this.SoundEffects.clip = this.Jump;
+            this.SoundEffects.Play();
             this.Jumping = true;
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) && isInTheAir && this.GameController.gameIsRunning)
+        else if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+            && isInTheAir && this.GameController.gameIsRunning)
         {
             this.FallingFast = true;
         }

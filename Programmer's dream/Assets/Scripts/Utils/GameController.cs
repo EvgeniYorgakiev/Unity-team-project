@@ -6,10 +6,17 @@ public class GameController : MonoBehaviour
     private const float MaxGlobalSpeed = 2.5f;
     private const float TimeForSpeedIncrease = 6f;
 
+    public AudioSource backgroundMusic;
     internal bool gameIsRunning = true;
     internal int currencyValue = 100;
     internal float globalSpeedModifier = 1.0f;
     private float currentSecond = 0.0f;
+
+    void Start()
+    {
+        this.backgroundMusic.Play();
+        this.backgroundMusic.loop = true;
+    }
 
     void Update()
     {
