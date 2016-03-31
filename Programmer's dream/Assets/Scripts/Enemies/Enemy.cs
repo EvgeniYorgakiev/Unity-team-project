@@ -8,7 +8,7 @@ public class Enemy : BackgroundMovement
     {
         if (other.tag == Tags.FlamethrowerTag)
         {
-            Destroy(this.gameObject);
+            this.gameObject.SetActive(false);
         }
     }
 }

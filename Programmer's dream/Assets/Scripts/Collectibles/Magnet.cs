@@ -2,9 +2,10 @@
 
 public class Magnet : Collectible
 {
+    public GameObject magnetCollector;
+
     public override void Collect()
     {
-        var magnetCollector = GameObject.FindGameObjectWithTag(Tags.MagnetCollectorTag);
         magnetCollector.GetComponent<MagnetCollector>().enabled = true;
         magnetCollector.GetComponent<MagnetCollector>().timeActive = 0.0f;
 

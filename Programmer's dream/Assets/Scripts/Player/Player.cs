@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class Player : MonoBehaviour
     public List<GameObject> lives;
     public AudioSource soundEffect;
     public AudioClip jump;
+    public GameObject highscore;
+    public Text possibleProfit;
     private PlayerMovement playerMovement;
     private PlayerKill playerKill;
     private List<GameObject> objectsInCollisionRange = new List<GameObject>();
@@ -41,9 +44,11 @@ public class Player : MonoBehaviour
             this.gameController,
             this.jumpDistance, 
             this.soundEffect, 
-            this.jump);
+            this.jump,
+            cameraPos.x - width,
+            cameraPos.x + width);
 
-        this.PlayerKill = new PlayerKill(this.gameController, this.gameObject.transform.position.x, this.lives, this.gameObject);
+        this.PlayerKill = new PlayerKill(this.gameController, this.gameObject.transform.position.x, this.lives, highscore, possibleProfit);
     }
 
     void FixedUpdate()
@@ -56,8 +61,6 @@ public class Player : MonoBehaviour
         if (gameController.gameIsRunning)
         {
             this.PlayerMovement.Update();
-
-            this.PlayerKill.Update(this.gameObject.transform.position.x, this.objectsInCollisionRange);
         }
     }
     
@@ -71,6 +74,11 @@ public class Player : MonoBehaviour
         else if (other.tag == Tags.PlatformTag)
         {
             this.objectsInCollisionRange.Add(other.gameObject);
+        }
+        else if (other.tag == Tags.EdgeTag)
+        {
+            this.objectsInCollisionRange.Add(other.gameObject.transform.parent.gameObject);
+            PlayerKill.TakeLife(this.objectsInCollisionRange);
         }
     }
 

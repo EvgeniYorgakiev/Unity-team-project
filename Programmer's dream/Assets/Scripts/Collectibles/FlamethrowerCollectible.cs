@@ -2,9 +2,10 @@
 
 public class FlamethrowerCollectible : Collectible
 {
+    public Flamethrower flamethrower;
+
     public override void Collect()
     {
-        var flamethrower = GameObject.FindGameObjectWithTag(Tags.PlayerTag).GetComponent<Player>().flamethrower;
         flamethrower.gameObject.SetActive(true);
         flamethrower.timeActive = 0.0f;
 

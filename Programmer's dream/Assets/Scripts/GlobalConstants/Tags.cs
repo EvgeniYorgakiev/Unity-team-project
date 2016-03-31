@@ -8,4 +8,5 @@
     public const string GameControllerTag = "Game controller";
     public const string MagnetCollectorTag = "Magnet collector";
     public const string FlamethrowerTag = "Flamethrower";
+    public const string EdgeTag = "Edge";
 }

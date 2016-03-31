@@ -6,20 +6,14 @@ public class BackgroundMovement : MonoBehaviour
 
     public Transform leftMostPosition;
     public Transform rightMostPosition;
-    public bool shouldBeDestroyed = false;
+    public bool shouldBePortedToRight = false;
     public float speed = 2;
-    private GameController gameController;
+    public GameController gameController;
     private float distanceBetweenPositions;
 
     void Start()
     {
-        if (this.leftMostPosition == null)
-        {
-            this.leftMostPosition = GameObject.FindGameObjectWithTag(LeftMostPositionLayerName).transform;
-        }
-
-        this.gameController = GameObject.FindGameObjectWithTag(Tags.GameControllerTag).GetComponent<GameController>();
-        if (!this.shouldBeDestroyed)
+        if (shouldBePortedToRight)
         {
             this.distanceBetweenPositions = this.rightMostPosition.position.x - this.leftMostPosition.position.x;
         }
@@ -33,9 +27,9 @@ public class BackgroundMovement : MonoBehaviour
         }
         if (this.transform.position.x < this.leftMostPosition.position.x)
         {
-            if (this.shouldBeDestroyed)
+            if (!shouldBePortedToRight)
             {
-                Destroy(this.gameObject);
+                this.gameObject.SetActive(false);
             }
             else
             {

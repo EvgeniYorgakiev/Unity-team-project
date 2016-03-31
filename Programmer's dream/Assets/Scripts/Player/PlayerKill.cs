@@ -6,7 +6,6 @@ using System;
 
 public class PlayerKill
 {
-    private const string HighScoreDescription = "High score: ";
     private const int MaxLivesToLose = 3;
 
     private int livesLost;
@@ -15,7 +14,6 @@ public class PlayerKill
     private Text possibleProfit;
     private GameController gameController;
     private List<GameObject> lives;
-    private GameObject player;
 
     private GameController GameController
     {
@@ -53,29 +51,14 @@ public class PlayerKill
         set { this.lives = value; }
     }
 
-    private GameObject Player
-    {
-        get { return this.player; }
-        set { this.player = value; }
-    }
-
-    public PlayerKill(GameController gameController, float startingPlayerXPosition, List<GameObject> lives, GameObject player)
+    public PlayerKill(GameController gameController, float startingPlayerXPosition, List<GameObject> lives, GameObject highScore, Text possibleProfit)
     {
         this.GameController = gameController;
         this.StartingPlayerXPosition = startingPlayerXPosition;
-        this.HighScore = GameObject.FindGameObjectWithTag(Tags.HighScoreTag).gameObject;
-        this.PossibleProfit = GameObject.FindGameObjectWithTag(Tags.PossibleProfitTag).GetComponent<Text>();
+        this.HighScore = highScore;
+        this.PossibleProfit = possibleProfit;
         this.LivesLost = 0;
         this.Lives = lives;
-        this.Player = player;
-    }
-
-    public void Update(float currentPlayerXPosition, List<GameObject> objectsInCollision)
-    {
-        if (currentPlayerXPosition < this.StartingPlayerXPosition)
-        {
-            TakeLife(objectsInCollision);
-        }
     }
 
     public void TakeLife(List<GameObject> objectsInCollision)
@@ -89,13 +72,9 @@ public class PlayerKill
             this.Lives[this.LivesLost].SetActive(true);
             this.LivesLost++;
             SetCurrencyValue();
-            this.Player.transform.position = new Vector3(
-                this.StartingPlayerXPosition, 
-                player.transform.position.y,
-                player.transform.position.z);
             for (int i = 0; i < objectsInCollision.Count; i++)
             {
-                UnityEngine.Object.Destroy(objectsInCollision[i]);
+                objectsInCollision[i].gameObject.SetActive(false);
             }
         }
     }
@@ -121,10 +100,9 @@ public class PlayerKill
                 break;
             }
         }
-        string currentScoreAsString = Regex.Match(this.PossibleProfit.text, "[0-9]+").Value;
 
         float difference = (float)this.GameController.currencyValue / oldCurrencyValue;
-        int newPossibleProfitValue = (int)Math.Round(int.Parse(currentScoreAsString) * difference);
+        int newPossibleProfitValue = (int)Math.Round(gameController.score * difference);
         this.PossibleProfit.text =
             Messages.PossibleProfitText + newPossibleProfitValue.ToString();
     }
@@ -132,13 +110,5 @@ public class PlayerKill
     private void KillPlayer()
     {
         this.GameController.gameIsRunning = false;
-        int currentScore = int.Parse(Regex.Match(this.PossibleProfit.text, "[0-9]+").Value);
-        int highScoreValue = int.Parse(Regex.Match(this.HighScore.GetComponent<Text>().text, "[0-9]+").Value);
-
-        if (currentScore > highScoreValue)
-        {
-            this.HighScore.GetComponent<Text>().text = HighScoreDescription + (currentScore).ToString();
-            this.HighScore.GetComponent<HighScore>().Save();
-        }
     }
 }

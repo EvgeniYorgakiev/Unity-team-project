@@ -7,9 +7,9 @@ public class RandomWorldGenerator : MonoBehaviour
 {
     private const float SecondsUntilFirstBug = 30f;
 
-    public List<Platform> platformsPrefabs = new List<Platform>();
-    public List<Enemy> enemiesPrefabs = new List<Enemy>();
-    public List<Collectible> collectibles = new List<Collectible>();
+    public List<ItemManager> platformsPrefabs = new List<ItemManager>();
+    public List<ItemManager> enemiesPrefabs = new List<ItemManager>();
+    public List<ItemManager> collectibles = new List<ItemManager>();
     private int numberOfObjectsInCollision = 0;
     private float timeSinceStart = 0.0f;
     private PlatformCreater platformCreater;
@@ -70,8 +70,11 @@ public class RandomWorldGenerator : MonoBehaviour
 
             int randomObjectIndex = Random.Range(0, numberOfPossibleObjects);
             var randomObject = CreateRandomObject(randomObjectIndex);
-            
-            CollectibleCreater.SpawnCollectible(randomObject);
+
+            if (randomObject != null)
+            {
+                CollectibleCreater.SpawnCollectible(randomObject);
+            }
         }
     }
 

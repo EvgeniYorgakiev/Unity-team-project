@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerMovement
 {
     private const float VelocityTolerance = 0.00001f;
+    private const float PlayerSpeed = 3f;
 
     private float jumpDistance;
     private GameObject gameObject;
@@ -13,14 +14,20 @@ public class PlayerMovement
     private float lastVelocity = 0;
     private AudioSource soundEffects;
     private AudioClip jump;
+    private float speed;
+    private float leftEdge;
+    private float rightEdge;
 
-    public PlayerMovement(GameObject gameObject, GameController gameController, float jumpDistance, AudioSource soundEffects, AudioClip jump)
+    public PlayerMovement(GameObject gameObject, GameController gameController, float jumpDistance, AudioSource soundEffects, AudioClip jump, float leftEdge, float rightEdge)
     {
         this.GameObject = gameObject;
         this.GameController = gameController;
         this.JumpDistance = jumpDistance;
         this.SoundEffects = soundEffects;
         this.Jump = jump;
+        this.Speed = PlayerSpeed;
+        this.LeftEdge = leftEdge;
+        this.RightEdge = rightEdge;
     }
 
     private float JumpDistance
@@ -70,8 +77,26 @@ public class PlayerMovement
         get { return lastVelocity; }
         set { lastVelocity = value; }
     }
+    
+    private float Speed
+    {
+        get { return speed; }
+        set { speed = value; }
+    }
 
-	internal void FixedUpdate ()
+    private float LeftEdge
+    {
+        get { return leftEdge; }
+        set { leftEdge = value; }
+    }
+
+    private float RightEdge
+    {
+        get { return rightEdge; }
+        set { rightEdge = value; }
+    }
+
+    internal void FixedUpdate ()
     {
 	    if (this.Jumping)
 	    {
@@ -100,6 +125,38 @@ public class PlayerMovement
             && isInTheAir && this.GameController.gameIsRunning)
         {
             this.FallingFast = true;
+        }
+        bool isNotOnLeftEdge = this.GameObject.transform.position.x -
+                               this.GameObject.GetComponent<BoxCollider2D>().size.x / 2 > this.LeftEdge;
+        bool isNotOnRightEdge = this.GameObject.transform.position.x +
+                                this.GameObject.GetComponent<BoxCollider2D>().size.x / 2 < this.RightEdge;
+        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && this.GameController.gameIsRunning &&
+            isNotOnLeftEdge && isTouchingGround)
+        {
+            float distance = Time.deltaTime * this.speed * gameController.globalSpeedModifier;
+            this.GameObject.transform.position = new Vector3(
+                this.GameObject.transform.position.x - distance,
+                this.GameObject.transform.position.y,
+                this.GameObject.transform.position.z);
+        }
+        else if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) && this.GameController.gameIsRunning &&
+            isNotOnRightEdge)
+        {
+            float distance = Time.deltaTime*this.speed*gameController.globalSpeedModifier;
+            if (isTouchingGround)
+            {
+                this.GameObject.transform.position = new Vector3(
+                    this.GameObject.transform.position.x + distance,
+                    this.GameObject.transform.position.y,
+                    this.GameObject.transform.position.z);
+            }
+            else
+            {
+                this.GameObject.transform.position = new Vector3(
+                    this.GameObject.transform.position.x + distance / 2,
+                    this.GameObject.transform.position.y,
+                    this.GameObject.transform.position.z);
+            }
         }
         this.LastVelocity = this.gameObject.GetComponent<Rigidbody2D>().velocity.y;
     }

@@ -15,6 +15,6 @@ public class Collectible : BackgroundMovement
 
     public virtual void Collect()
     {
-        Destroy(this.gameObject);
+        this.gameObject.SetActive(false);
     }
 }

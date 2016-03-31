@@ -7,13 +7,14 @@ public class Currency : MonoBehaviour
     private const float SpeedFactor = 5;
 
     public Sprite zeroSprite;
-    private Text possibleProfitText;
+    public Text possibleProfitText;
+    public GameObject magnetCollector;
+    public HighScore highScore;
+    public GameController gameController;
     private bool beingAttracted = false;
-    private GameObject magnetCollector;
 
-    void Start()
+    void OnEnable()
     {
-        this.possibleProfitText = GameObject.FindGameObjectWithTag(Tags.PossibleProfitTag).GetComponent<Text>();
         int textValue = Random.Range(0, 2);
         if (textValue == 0)
         {
@@ -36,13 +37,17 @@ public class Currency : MonoBehaviour
     {
         if (other.tag == Tags.PlayerTag)
         {
-            string currentScoreAsString = Regex.Match(this.possibleProfitText.text, "[0-9]+").Value;
-            GameController gameController =
-                GameObject.FindGameObjectWithTag(Tags.GameControllerTag).GetComponent<GameController>();
+            gameController.score += gameController.currencyValue;
 
-            this.possibleProfitText.text = 
-                Messages.PossibleProfitText + (int.Parse(currentScoreAsString) + gameController.currencyValue).ToString();
-            Destroy(this.gameObject);
+            this.possibleProfitText.text = Messages.PossibleProfitText + gameController.score;
+            
+            if (gameController.score > highScore.highScore)
+            {
+                this.highScore.GetComponent<Text>().text = Messages.HighScoreDescription + gameController.score.ToString();
+                this.highScore.GetComponent<HighScore>().Save();
+            }
+
+            this.gameObject.SetActive(false);
         }
         else if (other.tag == Tags.MagnetCollectorTag && other.GetComponent<MagnetCollector>().enabled)
         {
