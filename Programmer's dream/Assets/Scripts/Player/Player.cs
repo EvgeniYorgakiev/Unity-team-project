@@ -14,9 +14,11 @@ public class Player : MonoBehaviour
     public AudioClip jump;
     public GameObject highscore;
     public Text possibleProfit;
+    public Animator animator;
     private PlayerMovement playerMovement;
     private PlayerKill playerKill;
     private List<GameObject> objectsInCollisionRange = new List<GameObject>();
+    private int numberOfColliders = 0;
 
     public PlayerMovement PlayerMovement
     {
@@ -44,7 +46,7 @@ public class Player : MonoBehaviour
             this.gameController,
             this.jumpDistance, 
             this.soundEffect, 
-            this.jump,
+            this.jump, 
             cameraPos.x - width,
             cameraPos.x + width);
 
@@ -87,6 +89,26 @@ public class Player : MonoBehaviour
         if (other.tag == Tags.BugTag || other.tag == Tags.PlatformTag)
         {
             this.objectsInCollisionRange.Remove(other.gameObject);
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (numberOfColliders == 0)
+        {
+            this.animator.SetBool("Grounded", true);
+            this.animator.Play("Run");
+        }
+        this.numberOfColliders++;
+    }
+
+    void OnCollisionExit2D(Collision2D other)
+    {
+        this.numberOfColliders--;
+        if (numberOfColliders == 0)
+        {
+            this.animator.SetBool("Grounded", false);
+            this.animator.Play("Jump");
         }
     }
 }
