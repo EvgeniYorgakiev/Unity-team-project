@@ -3,16 +3,18 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 using UnityEngine.UI;
 using System;
+using System.Runtime.CompilerServices;
 
 public class PlayerKill
 {
-    private const int MaxLivesToLose = 3;
+    public const int MaxLivesToLose = 3;
 
     private int livesLost;
     private float startingPlayerXPosition;
     private GameObject highScore;
     private Text possibleProfit;
     private GameController gameController;
+    private Menu menu;
     private List<GameObject> lives;
 
     private GameController GameController
@@ -21,7 +23,13 @@ public class PlayerKill
         set { this.gameController = value; }
     }
 
-    private int LivesLost
+    private Menu Menu
+    {
+        get { return this.menu; }
+        set { this.menu = value; }
+    }
+
+    public int LivesLost
     {
         get { return this.livesLost; }
         set { this.livesLost = value; }
@@ -51,9 +59,10 @@ public class PlayerKill
         set { this.lives = value; }
     }
 
-    public PlayerKill(GameController gameController, float startingPlayerXPosition, List<GameObject> lives, GameObject highScore, Text possibleProfit)
+    public PlayerKill(GameController gameController, Menu menu, float startingPlayerXPosition, List<GameObject> lives, GameObject highScore, Text possibleProfit)
     {
         this.GameController = gameController;
+        this.Menu = menu;
         this.StartingPlayerXPosition = startingPlayerXPosition;
         this.HighScore = highScore;
         this.PossibleProfit = possibleProfit;
@@ -61,11 +70,12 @@ public class PlayerKill
         this.Lives = lives;
     }
 
-    public void TakeLife(List<GameObject> objectsInCollision)
+    public void TakeLife(List<GameObject> objectsInCollision, Animator animator)
     {
         if (this.LivesLost == MaxLivesToLose)
         {
-            KillPlayer();
+            this.LivesLost++;
+            KillPlayer(animator);
         }
         else
         {
@@ -74,8 +84,15 @@ public class PlayerKill
             SetCurrencyValue();
             for (int i = 0; i < objectsInCollision.Count; i++)
             {
-                objectsInCollision[i].gameObject.SetActive(false);
+                objectsInCollision[i].GetComponent<SpriteRenderer>().enabled = false;
+                objectsInCollision[i].GetComponent<BoxCollider2D>().enabled = false;
+                if (objectsInCollision[i].GetComponent<Platform>() != null)
+                {
+                    objectsInCollision[i].GetComponent<Platform>().leftEdge.SetActive(false);
+                    objectsInCollision[i].GetComponent<Platform>().rightEdge.SetActive(false);
+                }
             }
+            objectsInCollision.Clear();
         }
     }
 
@@ -107,8 +124,10 @@ public class PlayerKill
             Messages.PossibleProfitText + newPossibleProfitValue.ToString();
     }
 
-    private void KillPlayer()
+    private void KillPlayer(Animator animator)
     {
         this.GameController.gameIsRunning = false;
+        animator.Stop();
+        menu.ActivateMenu();
     }
 }

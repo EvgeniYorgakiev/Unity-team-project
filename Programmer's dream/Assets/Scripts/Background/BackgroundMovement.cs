@@ -29,7 +29,7 @@ public class BackgroundMovement : MonoBehaviour
         {
             if (!shouldBePortedToRight)
             {
-                this.gameObject.SetActive(false);
+                this.DeactivateObject();
             }
             else
             {
@@ -45,4 +45,15 @@ public class BackgroundMovement : MonoBehaviour
                         this.transform.position.y,
                         this.transform.position.z);
 	}
+
+    public void DeactivateObject()
+    {
+        this.GetComponent<SpriteRenderer>().enabled = false;
+        this.GetComponent<BoxCollider2D>().enabled = false;
+        if (this.GetComponent<Platform>() != null)
+        {
+            this.GetComponent<Platform>().leftEdge.SetActive(false);
+            this.GetComponent<Platform>().rightEdge.SetActive(false);
+        }
+    }
 }

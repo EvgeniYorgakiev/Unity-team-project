@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 
     public float jumpDistance;
     public GameController gameController;
+    public Menu menu;
     public Flamethrower flamethrower;
     public List<GameObject> lives;
     public AudioSource soundEffect;
@@ -50,7 +51,7 @@ public class Player : MonoBehaviour
             cameraPos.x - width,
             cameraPos.x + width);
 
-        this.PlayerKill = new PlayerKill(this.gameController, this.gameObject.transform.position.x, this.lives, highscore, possibleProfit);
+        this.PlayerKill = new PlayerKill(this.gameController, this.menu, this.gameObject.transform.position.x, this.lives, highscore, possibleProfit);
     }
 
     void FixedUpdate()
@@ -71,7 +72,7 @@ public class Player : MonoBehaviour
         if (other.tag == Tags.BugTag)
         {
             this.objectsInCollisionRange.Add(other.gameObject);
-            PlayerKill.TakeLife(this.objectsInCollisionRange);
+            PlayerKill.TakeLife(this.objectsInCollisionRange, this.animator);
         }
         else if (other.tag == Tags.PlatformTag)
         {
@@ -80,7 +81,7 @@ public class Player : MonoBehaviour
         else if (other.tag == Tags.EdgeTag)
         {
             this.objectsInCollisionRange.Add(other.gameObject.transform.parent.gameObject);
-            PlayerKill.TakeLife(this.objectsInCollisionRange);
+            PlayerKill.TakeLife(this.objectsInCollisionRange, this.animator);
         }
     }
 

@@ -5,6 +5,7 @@ public class Menu : MonoBehaviour
 {
     public GameController gameController;
     public GameObject gameUI;
+    public Player player;
     public GameObject menuUI;
     public GameObject confirmationMenu;
 
@@ -19,7 +20,10 @@ public class Menu : MonoBehaviour
     {
         this.gameUI.SetActive(true);
         this.menuUI.SetActive(false);
-        gameController.gameIsRunning = true;
+        if (player.PlayerKill.LivesLost <= PlayerKill.MaxLivesToLose)
+        {
+            gameController.gameIsRunning = true;
+        }
     }
 
     public void ActivateConfirmationMenu()
@@ -37,5 +41,10 @@ public class Menu : MonoBehaviour
     public void ActivateMainMenu()
     {
         SceneManager.LoadScene("Menu");
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
