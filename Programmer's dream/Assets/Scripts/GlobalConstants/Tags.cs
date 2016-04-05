@@ -9,4 +9,5 @@
     public const string MagnetCollectorTag = "Magnet collector";
     public const string FlamethrowerTag = "Flamethrower";
     public const string EdgeTag = "Edge";
+    public const string CollectibleTag = "Collectible";
 }

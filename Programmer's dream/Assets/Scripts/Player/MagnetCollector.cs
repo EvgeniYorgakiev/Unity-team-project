@@ -10,7 +10,7 @@ public class MagnetCollector : MonoBehaviour
         if (this.duration < this.timeActive)
         {
             this.timeActive = 0.0f;
-            this.enabled = false;
+            this.gameObject.SetActive(false);
         }
         else
         {

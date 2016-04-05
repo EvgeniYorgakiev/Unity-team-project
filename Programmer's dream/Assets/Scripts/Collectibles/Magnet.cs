@@ -6,7 +6,7 @@ public class Magnet : Collectible
 
     public override void Collect()
     {
-        magnetCollector.GetComponent<MagnetCollector>().enabled = true;
+        magnetCollector.SetActive(true);
         magnetCollector.GetComponent<MagnetCollector>().timeActive = 0.0f;
 
         base.Collect();

@@ -25,8 +25,7 @@ public class ItemManager : MonoBehaviour
         int count = pool.Length;
         for (int i = 0; i < count; i++)
         {
-            if (!(pool[i].gameObject.GetComponent<SpriteRenderer>() != null && 
-                pool[i].gameObject.GetComponent<SpriteRenderer>().enabled) || !pool[i].gameObject.activeSelf)
+            if (!pool[i].gameObject.activeSelf)
             {
                 GameObject item = pool[i];
                 if (activate)

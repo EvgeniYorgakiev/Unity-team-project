@@ -8,7 +8,7 @@ public class Enemy : BackgroundMovement
     {
         if (other.tag == Tags.FlamethrowerTag)
         {
-            this.DeactivateObject();
+            this.HideObject();
         }
     }
 }

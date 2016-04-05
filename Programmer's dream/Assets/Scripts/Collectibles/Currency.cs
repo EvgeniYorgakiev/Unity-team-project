@@ -12,9 +12,17 @@ public class Currency : MonoBehaviour
     public HighScore highScore;
     public GameController gameController;
     private bool beingAttracted = false;
+    private Vector3 localPosition;
+
+    void Awake()
+    {
+        this.localPosition = this.gameObject.transform.localPosition;
+    }
 
     void OnEnable()
     {
+        this.gameObject.transform.localPosition = this.localPosition;
+        this.beingAttracted = false;
         int textValue = Random.Range(0, 2);
         if (textValue == 0)
         {
@@ -53,6 +61,10 @@ public class Currency : MonoBehaviour
         {
             this.beingAttracted = true;
             this.magnetCollector = other.gameObject;
+        }
+        else if (other.tag == Tags.CollectibleTag)
+        {
+            this.gameObject.SetActive(false);
         }
     }
 }
