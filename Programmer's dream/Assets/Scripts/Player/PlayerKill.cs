@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Text.RegularExpressions;
 using UnityEngine.UI;
 using System;
-using System.Runtime.CompilerServices;
 
 public class PlayerKill
 {
@@ -72,7 +70,7 @@ public class PlayerKill
 
     public void TakeLife(List<GameObject> objectsInCollision, Animator animator)
     {
-        if (this.LivesLost == MaxLivesToLose)
+        if (this.LivesLost >= this.Lives.Count)
         {
             this.LivesLost++;
             KillPlayer(animator);
@@ -84,15 +82,28 @@ public class PlayerKill
             SetCurrencyValue();
             for (int i = 0; i < objectsInCollision.Count; i++)
             {
-                objectsInCollision[i].GetComponent<SpriteRenderer>().enabled = false;
-                objectsInCollision[i].GetComponent<BoxCollider2D>().enabled = false;
-                if (objectsInCollision[i].GetComponent<Platform>() != null)
+                DeactivateObject(objectsInCollision[i]);
+
+                foreach (Transform child in objectsInCollision[i].transform)
                 {
-                    objectsInCollision[i].GetComponent<Platform>().leftEdge.SetActive(false);
-                    objectsInCollision[i].GetComponent<Platform>().rightEdge.SetActive(false);
+                    if (child.tag == Tags.BugTag)
+                    {
+                        DeactivateObject(child.gameObject);
+                    }
                 }
             }
             objectsInCollision.Clear();
+        }
+    }
+
+    private static void DeactivateObject(GameObject objectInCollision)
+    {
+        objectInCollision.GetComponent<SpriteRenderer>().enabled = false;
+        objectInCollision.GetComponent<BoxCollider2D>().enabled = false;
+        if (objectInCollision.GetComponent<Platform>() != null)
+        {
+            objectInCollision.GetComponent<Platform>().leftEdge.SetActive(false);
+            objectInCollision.GetComponent<Platform>().rightEdge.SetActive(false);
         }
     }
 

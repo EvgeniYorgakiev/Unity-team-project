@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlatformCreater
 {
-    private const float XDistanceBetweenPlatforms = 0.7f;
+    private const float XDistanceBetweenPlatforms = 1.5f;
     private const float YDistanceBetweenPlatforms = 1.7f;
 
     private GameObject randomGenerator;

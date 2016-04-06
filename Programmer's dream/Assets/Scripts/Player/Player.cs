@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     private const float DistanceFromLeftEdge = 1f;
+    private const float YSizeOfPlatform = 0.72f;
 
     public float jumpDistance;
     public GameController gameController;
@@ -18,8 +19,10 @@ public class Player : MonoBehaviour
     public Animator animator;
     private PlayerMovement playerMovement;
     private PlayerKill playerKill;
-    private List<GameObject> objectsInCollisionRange = new List<GameObject>();
+    private readonly List<GameObject> objectsInCollisionRange = new List<GameObject>();
     private int numberOfColliders = 0;
+    private string tagOfObjectBelowBottomRightCorner = string.Empty;
+    private string tagOfObjectBelowBottomLeftCorner = string.Empty;
 
     public PlayerMovement PlayerMovement
     {
@@ -64,6 +67,25 @@ public class Player : MonoBehaviour
         if (gameController.gameIsRunning)
         {
             this.PlayerMovement.Update();
+            Vector2 bottomRightCorner = new Vector2(
+                this.transform.position.x + this.gameObject.GetComponent<BoxCollider2D>().size.x / 2,
+                this.transform.position.y - this.gameObject.GetComponent<BoxCollider2D>().size.y / 2 - YSizeOfPlatform);
+            Vector2 bottomLeftCorner = new Vector2(
+                this.transform.position.x - this.gameObject.GetComponent<BoxCollider2D>().size.x / 2,
+                this.transform.position.y - this.gameObject.GetComponent<BoxCollider2D>().size.y / 2 - YSizeOfPlatform);
+
+            var rayFromBottomRightCorner = Physics2D.Raycast(bottomRightCorner, Vector2.down);
+            var rayFromBottomLeftCorner = Physics2D.Raycast(bottomLeftCorner, Vector2.down);
+
+            if (rayFromBottomRightCorner.collider != null)
+            {
+                tagOfObjectBelowBottomRightCorner = rayFromBottomRightCorner.collider.tag;
+            }
+
+            if (rayFromBottomLeftCorner.collider != null)
+            {
+                tagOfObjectBelowBottomLeftCorner = rayFromBottomLeftCorner.collider.tag;
+            }
         }
     }
     
@@ -80,6 +102,12 @@ public class Player : MonoBehaviour
         }
         else if (other.tag == Tags.EdgeTag)
         {
+            if (tagOfObjectBelowBottomLeftCorner == Tags.PlatformTag ||
+                tagOfObjectBelowBottomRightCorner == Tags.PlatformTag)
+            {
+                return;
+            }
+
             this.objectsInCollisionRange.Add(other.gameObject.transform.parent.gameObject);
             PlayerKill.TakeLife(this.objectsInCollisionRange, this.animator);
         }
